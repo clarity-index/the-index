@@ -1,4 +1,4 @@
-S# The Index - Example Claims
+# The Index - Example Claims
 
 This directory contains canonical example claims that demonstrate the use of The Index protocol. All examples are aligned with the JSON schema defined in `/schema/claim.schema.json` and follow protocol invariants.
 
@@ -75,7 +75,3 @@ To add new examples:
 ---
 
 **Last Updated**: 2024-01-23
-=======
-# Examples
-
-This directory will contain example implementations and use cases for The Index.

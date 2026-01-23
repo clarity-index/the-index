@@ -79,6 +79,43 @@ Implementations should:
 3. Support ontology-based search and filtering
 4. Respect ontology hierarchies in epistemic computation
 
+## Ontology Registry Interface
+
+The Ontology Registry Interface provides programmatic access to registered ontologies and their validation rules. This interface enables implementations to:
+
+### Core Interface Methods
+
+- **`register_ontology(ontology_file)`**: Register a new ontology with validation
+- **`get_ontology(ontology_id, version)`**: Retrieve a specific ontology by ID and version
+- **`validate_term(term_id, ontology_id)`**: Verify that a term exists in the specified ontology
+- **`list_ontologies()`**: Get all registered ontologies with metadata
+- **`resolve_term(term_reference)`**: Resolve a term reference to its full definition
+
+### Validation Requirements
+
+All ontology references in claims MUST be validated against the registry:
+
+1. **Existence Check**: Referenced ontology ID must exist in the registry
+2. **Version Compatibility**: Ontology version must be compatible with the claim's protocol version
+3. **Term Validation**: All terms used (predicates, relation types, evidence types) must be defined in the referenced ontology
+4. **Namespace Resolution**: Term namespaces must resolve to registered ontology URIs
+5. **Circular Dependency Check**: Extended ontologies cannot create circular dependencies
+
+### Future Expansion Considerations
+
+The Ontology Registry Interface is designed to support:
+
+- **Federated Registries**: Multiple registries can be configured with priority ordering
+- **Dynamic Loading**: Ontologies can be loaded on-demand rather than at startup
+- **Caching**: Frequently accessed ontologies are cached for performance
+- **Version Migration**: Automatic migration support for claims using deprecated ontology versions
+- **Cross-Domain Reasoning**: Support for reasoning across multiple domain ontologies
+- **Machine-Readable Formats**: Support for additional ontology formats (OWL, RDF, JSON-LD)
+- **Ontology Composition**: Ability to compose new ontologies from existing ones
+- **Validation Hooks**: Custom validation rules can be registered for specific ontology types
+
+Implementations MAY provide additional interface methods but MUST support the core methods listed above.
+
 ## Contributing
 
 To propose ontology additions or changes:
@@ -100,7 +137,3 @@ To propose ontology additions or changes:
 
 **Version**: 1.0.0  
 **Last Updated**: 2024-01-23
-=======
-# Ontology
-
-This directory will contain ontology definitions for The Index.
