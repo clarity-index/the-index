@@ -8,7 +8,7 @@ and retrieval, with centralized schema validation.
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class Provenance(BaseModel):
@@ -54,23 +54,18 @@ class Claim(BaseModel):
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
     provenance: Optional[Provenance] = Field(None, description="Provenance information")
 
-    @field_validator("evidence_refs", "justification", mode="after")
-    @classmethod
-    def validate_evidence_or_justification(cls, v, info):
+    @model_validator(mode="after")
+    def validate_evidence_or_justification(self):
         """Enforce protocol invariant: MUST have either evidence_refs OR justification."""
-        evidence_refs = info.data.get("evidence_refs")
-        justification = info.data.get("justification")
-        
-        # Check that at least one is provided
-        has_evidence = evidence_refs is not None and len(evidence_refs) > 0
-        has_justification = justification is not None and len(justification.strip()) > 0
+        has_evidence = self.evidence_refs is not None and len(self.evidence_refs) > 0
+        has_justification = self.justification is not None and len(self.justification.strip()) > 0
         
         if not has_evidence and not has_justification:
             raise ValueError(
                 "Protocol invariant violation: Claim MUST have either evidence_refs or justification"
             )
         
-        return v
+        return self
 
     class Config:
         json_schema_extra = {
@@ -107,22 +102,18 @@ class ClaimCreate(BaseModel):
     semantic_representation: Optional[Dict[str, Any]] = None
     domains: Optional[List[str]] = None
 
-    @field_validator("evidence_refs", "justification", mode="after")
-    @classmethod
-    def validate_evidence_or_justification(cls, v, info):
+    @model_validator(mode="after")
+    def validate_evidence_or_justification(self):
         """Enforce protocol invariant: MUST have either evidence_refs OR justification."""
-        evidence_refs = info.data.get("evidence_refs")
-        justification = info.data.get("justification")
-        
-        has_evidence = evidence_refs is not None and len(evidence_refs) > 0
-        has_justification = justification is not None and len(justification.strip()) > 0
+        has_evidence = self.evidence_refs is not None and len(self.evidence_refs) > 0
+        has_justification = self.justification is not None and len(self.justification.strip()) > 0
         
         if not has_evidence and not has_justification:
             raise ValueError(
                 "Protocol invariant violation: Claim MUST have either evidence_refs or justification"
             )
         
-        return v
+        return self
 
 
 class ClaimResponse(BaseModel):
