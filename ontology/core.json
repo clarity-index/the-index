@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "core",
+  "version": "1.0.0",
+  "name": "The Index Core Ontology",
+  "description": "Core ontology defining fundamental types and relationships for The Index protocol",
+  "namespace": "https://clarity-index.github.io/ontologies/core",
+  "created": "2024-01-23T22:00:00Z",
+  "updated": "2024-01-23T22:00:00Z",
+  "contributors": ["index_protocol_team"],
+  "terms": [
+    {
+      "id": "supports",
+      "label": "Supports",
+      "definition": "The evidence or claim provides strong positive support for the target claim",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["supports", "confirms", "validates"],
+      "examples": [
+        "Experimental data supports the hypothesis",
+        "Replication study supports original findings"
+      ],
+      "weight_range": [0.7, 1.0]
+    },
+    {
+      "id": "contradicts",
+      "label": "Contradicts",
+      "definition": "The evidence or claim is in direct opposition to the target claim",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["contradicts", "refutes", "disproves"],
+      "examples": [
+        "New data contradicts previous conclusions",
+        "Counter-evidence contradicts the hypothesis"
+      ],
+      "weight_range": [-1.0, -0.7]
+    },
+    {
+      "id": "weakly_supports",
+      "label": "Weakly Supports",
+      "definition": "The evidence or claim provides limited or partial support for the target claim",
+      "type": "relation",
+      "parent": "supports",
+      "aliases": ["weakly_supports", "partially_supports", "suggests"],
+      "examples": [
+        "Preliminary results weakly support the hypothesis",
+        "Correlational data weakly supports causal claim"
+      ],
+      "weight_range": [0.3, 0.7]
+    },
+    {
+      "id": "refines",
+      "label": "Refines",
+      "definition": "The claim narrows or specifies the scope of the target claim without contradicting it",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["refines", "specifies", "clarifies"],
+      "examples": [
+        "Claim refines the conditions under which the effect occurs",
+        "New claim refines the original hypothesis with additional parameters"
+      ],
+      "weight_range": [0.5, 1.0]
+    },
+    {
+      "id": "generalizes",
+      "label": "Generalizes",
+      "definition": "The claim broadens the scope of the target claim to a wider context",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["generalizes", "extends", "broadens"],
+      "examples": [
+        "Theory generalizes findings to other domains",
+        "Meta-analysis generalizes results across populations"
+      ],
+      "weight_range": [0.5, 1.0]
+    },
+    {
+      "id": "depends_on",
+      "label": "Depends On",
+      "definition": "The claim is logically or empirically dependent on the target claim",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["depends_on", "requires", "presupposes"],
+      "examples": [
+        "Derived theorem depends on fundamental axioms",
+        "Applied result depends on theoretical foundation"
+      ],
+      "weight_range": [0.8, 1.0]
+    },
+    {
+      "id": "conflicts_with",
+      "label": "Conflicts With",
+      "definition": "The claim is inconsistent with the target claim but not necessarily a direct contradiction",
+      "type": "relation",
+      "parent": null,
+      "aliases": ["conflicts_with", "inconsistent_with", "incompatible_with"],
+      "examples": [
+        "Interpretation conflicts with alternative explanation",
+        "Finding conflicts with established theory"
+      ],
+      "weight_range": [-0.7, -0.3]
+    },
+    {
+      "id": "experiment",
+      "label": "Experiment",
+      "definition": "Controlled empirical investigation designed to test hypotheses",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["experiment", "experimental_study", "trial"],
+      "examples": [
+        "Randomized controlled trial",
+        "Laboratory experiment with control group"
+      ],
+      "quality_factors": ["sample_size", "controls", "randomization", "blinding"]
+    },
+    {
+      "id": "observation",
+      "label": "Observation",
+      "definition": "Systematic recording of phenomena without experimental manipulation",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["observation", "observational_study", "field_observation"],
+      "examples": [
+        "Astronomical observation of celestial objects",
+        "Ecological survey of species distribution"
+      ],
+      "quality_factors": ["sample_size", "measurement_precision", "observation_duration"]
+    },
+    {
+      "id": "dataset",
+      "label": "Dataset",
+      "definition": "Structured collection of data compiled for analysis",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["dataset", "data_collection", "database"],
+      "examples": [
+        "Genomic sequence database",
+        "Climate measurement dataset spanning decades"
+      ],
+      "quality_factors": ["completeness", "consistency", "provenance", "documentation"]
+    },
+    {
+      "id": "simulation",
+      "label": "Simulation",
+      "definition": "Computational modeling of systems or processes",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["simulation", "computational_model", "in_silico_experiment"],
+      "examples": [
+        "Molecular dynamics simulation",
+        "Climate model projection"
+      ],
+      "quality_factors": ["model_validation", "parameter_sensitivity", "computational_resources"]
+    },
+    {
+      "id": "theorem",
+      "label": "Theorem",
+      "definition": "Formally proven mathematical or logical statement",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["theorem", "proof", "derivation"],
+      "examples": [
+        "Mathematical proof using formal logic",
+        "Derived theorem from established axioms"
+      ],
+      "quality_factors": ["formal_rigor", "axiom_dependencies", "proof_verification"]
+    },
+    {
+      "id": "meta_analysis",
+      "label": "Meta-Analysis",
+      "definition": "Statistical synthesis of results from multiple studies",
+      "type": "evidence_type",
+      "parent": null,
+      "aliases": ["meta_analysis", "systematic_review", "research_synthesis"],
+      "examples": [
+        "Meta-analysis of clinical trials",
+        "Systematic review of observational studies"
+      ],
+      "quality_factors": ["study_inclusion_criteria", "statistical_method", "publication_bias_assessment"]
+    },
+    {
+      "id": "proposed",
+      "label": "Proposed",
+      "definition": "Claim has been submitted but lacks sufficient evidence for evaluation",
+      "type": "status",
+      "parent": null,
+      "aliases": ["proposed", "pending", "initial"],
+      "examples": ["Newly submitted hypothesis awaiting evidence"]
+    },
+    {
+      "id": "supported",
+      "label": "Supported",
+      "definition": "Claim has strong evidential support with supporting weight significantly exceeding contradicting weight",
+      "type": "status",
+      "parent": null,
+      "aliases": ["supported", "confirmed", "validated"],
+      "examples": ["Well-established scientific fact with multiple lines of evidence"]
+    },
+    {
+      "id": "contested",
+      "label": "Contested",
+      "definition": "Claim has comparable supporting and contradicting evidence, indicating uncertainty",
+      "type": "status",
+      "parent": null,
+      "aliases": ["contested", "disputed", "uncertain"],
+      "examples": ["Hypothesis with conflicting experimental results"]
+    },
+    {
+      "id": "refuted",
+      "label": "Refuted",
+      "definition": "Claim has strong contradicting evidence with contradicting weight significantly exceeding supporting weight",
+      "type": "status",
+      "parent": null,
+      "aliases": ["refuted", "disproven", "falsified"],
+      "examples": ["Discredited hypothesis with overwhelming counter-evidence"]
+    },
+    {
+      "id": "deprecated",
+      "label": "Deprecated",
+      "definition": "Claim has been superseded, retracted, or removed from active consideration via governance",
+      "type": "status",
+      "parent": null,
+      "aliases": ["deprecated", "retired", "superseded"],
+      "examples": ["Outdated theory replaced by better explanation"]
+    }
+  ],
+  "hierarchies": {
+    "relation_types": {
+      "root": ["supports", "contradicts", "refines", "generalizes", "depends_on", "conflicts_with"],
+      "support_hierarchy": ["supports", "weakly_supports"],
+      "opposition_hierarchy": ["contradicts", "conflicts_with"]
+    },
+    "evidence_types": {
+      "root": ["experiment", "observation", "dataset", "simulation", "theorem", "meta_analysis"],
+      "empirical": ["experiment", "observation", "dataset"],
+      "computational": ["simulation"],
+      "theoretical": ["theorem"],
+      "synthetic": ["meta_analysis"]
+    },
+    "status_categories": {
+      "root": ["proposed", "supported", "contested", "refuted", "deprecated"],
+      "active": ["proposed", "supported", "contested", "refuted"],
+      "inactive": ["deprecated"]
+    }
+  }
+}
