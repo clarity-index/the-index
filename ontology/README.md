@@ -100,3 +100,7 @@ To propose ontology additions or changes:
 
 **Version**: 1.0.0  
 **Last Updated**: 2024-01-23
+=======
+# Ontology
+
+This directory will contain ontology definitions for The Index.
