@@ -1,0 +1,29 @@
+{
+  "id": "claim_fermat_last_theorem",
+  "subject": "diophantine_equation",
+  "predicate": "has_no_solution",
+  "object": "for_n_greater_than_2",
+  "contributor_id": "bitrep_mathematician_carol_003",
+  "timestamp": "2024-01-10T14:00:00Z",
+  "justification": "Fermat's Last Theorem states that no three positive integers a, b, and c satisfy the equation a^n + b^n = c^n for any integer value of n greater than 2. This was conjectured by Pierre de Fermat in 1637 and proven by Andrew Wiles in 1995 using modular forms and elliptic curves.",
+  "canonical_text": "For any integer n > 2, the equation a^n + b^n = c^n has no solutions in positive integers a, b, c.",
+  "semantic_representation": {
+    "subject": "diophantine_equation",
+    "predicate": "has_no_solution",
+    "object": "for_n_greater_than_2",
+    "mathematical_domain": "number_theory",
+    "proof_method": "modularity_theorem"
+  },
+  "domains": [
+    "mathematics",
+    "number_theory",
+    "algebraic_geometry"
+  ],
+  "status": "supported",
+  "created_at": "2024-01-10T14:00:00Z",
+  "updated_at": "2024-01-10T14:00:00Z",
+  "provenance": {
+    "signature": "sig_math456jkl789...",
+    "attestation_id": "attestation_fermat_001"
+  }
+}

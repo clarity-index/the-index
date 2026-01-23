@@ -1,0 +1,29 @@
+{
+  "id": "claim_justification_example_001",
+  "subject": "peer_review",
+  "predicate": "enhances",
+  "object": "scientific_publication_quality",
+  "contributor_id": "bitrep_metascientist_eve_005",
+  "timestamp": "2024-01-21T13:45:00Z",
+  "justification": "Peer review serves as a quality control mechanism in scientific publishing by subjecting manuscripts to critical evaluation by independent experts before publication. This process identifies methodological flaws, ensures appropriate contextualization within existing literature, and improves clarity of presentation. While not perfect, the peer review process has been a cornerstone of scientific communication for centuries and generally correlates with higher quality publications compared to non-peer-reviewed outlets.",
+  "canonical_text": "The peer review process enhances the quality of scientific publications by providing expert evaluation and feedback before publication.",
+  "semantic_representation": {
+    "subject": "peer_review",
+    "predicate": "enhances",
+    "object": "scientific_publication_quality",
+    "mechanism": "expert_evaluation",
+    "temporal_relation": "before_publication"
+  },
+  "domains": [
+    "metascience",
+    "scientific_publishing",
+    "research_methods"
+  ],
+  "status": "proposed",
+  "created_at": "2024-01-21T13:45:00Z",
+  "updated_at": "2024-01-21T13:45:00Z",
+  "provenance": {
+    "signature": "sig_meta345pqr678...",
+    "attestation_id": "attestation_peer_review_001"
+  }
+}

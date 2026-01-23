@@ -1,0 +1,33 @@
+{
+  "id": "claim_evidence_example_001",
+  "subject": "intermittent_fasting",
+  "predicate": "improves",
+  "object": "metabolic_health_markers",
+  "contributor_id": "bitrep_nutritionist_david_004",
+  "timestamp": "2024-01-22T08:30:00Z",
+  "evidence_refs": [
+    "evidence_rct_fasting_2023",
+    "evidence_insulin_sensitivity_study",
+    "evidence_lipid_profile_meta_analysis"
+  ],
+  "canonical_text": "Intermittent fasting improves metabolic health markers including insulin sensitivity, lipid profiles, and inflammatory markers in overweight adults.",
+  "semantic_representation": {
+    "subject": "intermittent_fasting",
+    "predicate": "improves",
+    "object": "metabolic_health_markers",
+    "population": "overweight_adults",
+    "outcomes": ["insulin_sensitivity", "lipid_profile", "inflammation"]
+  },
+  "domains": [
+    "nutrition",
+    "metabolism",
+    "preventive_medicine"
+  ],
+  "status": "supported",
+  "created_at": "2024-01-22T08:30:00Z",
+  "updated_at": "2024-01-22T16:20:00Z",
+  "provenance": {
+    "signature": "sig_nutr789mno012...",
+    "attestation_id": "attestation_fasting_001"
+  }
+}

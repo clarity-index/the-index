@@ -1,0 +1,33 @@
+{
+  "id": "claim_qe_macroscopic_001",
+  "subject": "quantum_entanglement",
+  "predicate": "persists_over",
+  "object": "macroscopic_distances",
+  "contributor_id": "bitrep_physicist_alice_001",
+  "timestamp": "2024-01-15T10:30:00Z",
+  "evidence_refs": [
+    "evidence_bell_test_2023",
+    "evidence_satellite_qe_2024",
+    "evidence_fiber_optic_entanglement"
+  ],
+  "canonical_text": "Quantum entanglement persists over macroscopic distances, including satellite-to-ground links exceeding 1000 km.",
+  "semantic_representation": {
+    "subject": "quantum_entanglement",
+    "predicate": "persists_over",
+    "object": "macroscopic_distances",
+    "quantifier": "universally_observed",
+    "context": "experimental_validation"
+  },
+  "domains": [
+    "quantum_physics",
+    "experimental_physics",
+    "quantum_information"
+  ],
+  "status": "supported",
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-20T14:22:00Z",
+  "provenance": {
+    "signature": "sig_abc123def456...",
+    "attestation_id": "attestation_qe_001"
+  }
+}

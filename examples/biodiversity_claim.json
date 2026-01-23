@@ -1,0 +1,33 @@
+{
+  "id": "claim_biodiversity_climate_001",
+  "subject": "climate_change",
+  "predicate": "accelerates",
+  "object": "species_extinction_rate",
+  "contributor_id": "bitrep_ecologist_bob_002",
+  "timestamp": "2024-01-18T09:15:00Z",
+  "evidence_refs": [
+    "evidence_ipcc_report_2023",
+    "evidence_species_range_shifts",
+    "evidence_extinction_meta_analysis"
+  ],
+  "canonical_text": "Climate change accelerates species extinction rates by disrupting habitats and ecological relationships faster than species can adapt.",
+  "semantic_representation": {
+    "subject": "climate_change",
+    "predicate": "accelerates",
+    "object": "species_extinction_rate",
+    "mechanism": "habitat_disruption",
+    "temporal_scale": "decades"
+  },
+  "domains": [
+    "ecology",
+    "conservation_biology",
+    "climate_science"
+  ],
+  "status": "supported",
+  "created_at": "2024-01-18T09:15:00Z",
+  "updated_at": "2024-01-19T11:45:00Z",
+  "provenance": {
+    "signature": "sig_xyz789ghi012...",
+    "attestation_id": "attestation_biodiv_001"
+  }
+}
