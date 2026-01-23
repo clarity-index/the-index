@@ -5,8 +5,8 @@
   "name": "The Index Core Ontology",
   "description": "Core ontology defining fundamental types and relationships for The Index protocol",
   "namespace": "https://clarity-index.github.io/ontologies/core",
-  "created": "2024-01-23T00:00:00Z",
-  "updated": "2024-01-23T00:00:00Z",
+  "created": "2024-01-23T22:00:00Z",
+  "updated": "2024-01-23T22:00:00Z",
   "contributors": ["index_protocol_team"],
   "terms": [
     {

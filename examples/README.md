@@ -28,6 +28,8 @@ All example claims MUST:
 - Use valid status values: `proposed`, `supported`, `contested`, `refuted`, `deprecated`
 - Follow ID patterns (e.g., `claim_[a-zA-Z0-9_-]+`)
 
+**Note:** Provenance signatures and attestation IDs in examples use simplified placeholder values for demonstration purposes. In production, these would be actual cryptographic signatures and BitRep attestation identifiers.
+
 ## Using These Examples
 
 ### For Testing

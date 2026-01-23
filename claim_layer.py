@@ -34,7 +34,7 @@ class ClaimStore:
         Store a claim in memory.
         
         Args:
-            claim: Claim dictionary with validated fields
+            claim: Claim dictionary with validated fields (will be copied and modified)
             
         Returns:
             The claim ID
@@ -42,6 +42,9 @@ class ClaimStore:
         Raises:
             ValueError: If claim violates protocol invariants
         """
+        # Create a copy to avoid mutating the input
+        claim = claim.copy()
+        
         # Validate protocol invariants
         self._validate_invariants(claim)
         
