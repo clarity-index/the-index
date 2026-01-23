@@ -179,11 +179,11 @@ class EvidenceService:
         
         # Determine status category
         if contradicting_weight > supporting_weight:
-            if contradicting_weight > 5.0:
+            if contradicting_weight > 3.0:
                 status = ClaimStatus.REFUTED
             else:
                 status = ClaimStatus.CONTESTED
-        elif supporting_weight > 3.0:
+        elif supporting_weight > 2.0:
             status = ClaimStatus.SUPPORTED
         else:
             status = ClaimStatus.PROPOSED
