@@ -148,10 +148,10 @@ class GovernanceService:
         if proposal.voting_ends_at and now > proposal.voting_ends_at:
             return None
 
-        # Check if voter has already voted
+        # Check if voter has already voted on this proposal
         voter_key = f"{vote_data.voter}_{vote_data.proposal_id}"
         if voter_key in self._voter_proposals:
-            return None
+            return None  # Already voted
 
         # Calculate weighted vote with quadratic scaling
         weighted_vote = self._calculate_weighted_vote(
@@ -170,7 +170,7 @@ class GovernanceService:
         )
 
         self._votes[vote_id] = vote
-        self._voter_proposals[voter_key] = set()
+        self._voter_proposals[voter_key] = True  # Mark as voted
 
         # Update proposal vote tallies
         if vote_data.choice == VoteChoice.YES:

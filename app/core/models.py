@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class ClaimStatus(str, Enum):
@@ -159,14 +159,14 @@ class LinkBase(BaseModel):
     relation_type: RelationType = Field(..., description="Type of relationship")
     strength: float = Field(default=1.0, ge=0.0, le=1.0, description="Strength of the relationship")
 
-    @validator("claim_id_2")
-    def validate_link_target(cls, v, values):
-        """Ensure either evidence_id or claim_id_2 is provided."""
-        if v is None and values.get("evidence_id") is None:
+    @model_validator(mode="after")
+    def validate_link_targets(self) -> "LinkBase":
+        """Ensure either evidence_id or claim_id_2 is provided, but not both."""
+        if self.evidence_id is None and self.claim_id_2 is None:
             raise ValueError("Either evidence_id or claim_id_2 must be provided")
-        if v is not None and values.get("evidence_id") is not None:
+        if self.evidence_id is not None and self.claim_id_2 is not None:
             raise ValueError("Only one of evidence_id or claim_id_2 can be provided")
-        return v
+        return self
 
 
 class LinkCreate(LinkBase):

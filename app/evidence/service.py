@@ -19,6 +19,14 @@ from app.core.models import (
     RelationType,
 )
 
+# Quality score calculation constants
+QUALITY_BASE_SCORE = 0.5  # Base quality score for all evidence
+QUALITY_METHODOLOGY_BONUS = 0.1  # Bonus for having methodology
+QUALITY_SAMPLE_SIZE_BONUS = 0.1  # Bonus for sample size > 100
+QUALITY_SAMPLE_SIZE_THRESHOLD = 100  # Minimum sample size for bonus
+QUALITY_UNCERTAINTY_BONUS = 0.1  # Bonus for reporting uncertainty
+QUALITY_REPLICATION_BONUS = 0.2  # Bonus for replication history
+
 
 class EvidenceService:
     """
@@ -205,25 +213,32 @@ class EvidenceService:
         """
         Calculate an initial quality score for evidence based on metadata.
 
+        Quality score components:
+        - Base score: 0.5 (all evidence starts here)
+        - Methodology: +0.1 if described
+        - Sample size: +0.1 if > 100
+        - Uncertainty: +0.1 if reported
+        - Replication: +0.2 if available
+
         Args:
             evidence_data: Evidence data
 
         Returns:
             Quality score between 0.0 and 1.0
         """
-        score = 0.5  # Base score
+        score = QUALITY_BASE_SCORE
 
         metadata = evidence_data.metadata
 
         # Adjust based on metadata completeness
         if metadata.methodology:
-            score += 0.1
-        if metadata.sample_size and metadata.sample_size > 100:
-            score += 0.1
+            score += QUALITY_METHODOLOGY_BONUS
+        if metadata.sample_size and metadata.sample_size > QUALITY_SAMPLE_SIZE_THRESHOLD:
+            score += QUALITY_SAMPLE_SIZE_BONUS
         if metadata.uncertainty is not None:
-            score += 0.1
+            score += QUALITY_UNCERTAINTY_BONUS
         if metadata.replication_history:
-            score += 0.2
+            score += QUALITY_REPLICATION_BONUS
 
         return min(score, 1.0)
 
