@@ -36,7 +36,7 @@ class GovernanceService:
         self._proposals: Dict[str, Proposal] = {}
         self._votes: Dict[str, Vote] = {}
         # Track votes by proposal and voter to prevent double voting
-        self._voter_proposals: Dict[str, set] = {}
+        self._voter_proposals: Dict[str, bool] = {}
 
     def create_proposal(self, proposal_data: ProposalCreate) -> Proposal:
         """

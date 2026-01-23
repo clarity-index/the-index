@@ -4,7 +4,7 @@ Configuration management for The Index.
 This module provides application configuration using Pydantic settings.
 """
 
-from typing import Optional
+from typing import Optional, List
 
 from pydantic_settings import BaseSettings
 
@@ -19,6 +19,9 @@ class Settings(BaseSettings):
 
     # API
     api_prefix: str = "/api/v1"
+    
+    # CORS
+    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8080"]
 
     # Security
     secret_key: str = "dev-secret-key-change-in-production"
