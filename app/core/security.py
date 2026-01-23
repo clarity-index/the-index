@@ -9,15 +9,15 @@ This module provides:
 """
 
 from datetime import datetime, timedelta
-from typing import Optional, Any, Dict
+from typing import Any, Dict, Optional
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.backends import default_backend
 
 from .config import settings
-
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -36,11 +36,11 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """
     Create a JWT access token.
-    
+
     Args:
         data: Payload data to encode in the token
         expires_delta: Optional expiration time delta
-        
+
     Returns:
         Encoded JWT token
     """
@@ -57,10 +57,10 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def verify_token(token: str) -> Optional[Dict[str, Any]]:
     """
     Verify and decode a JWT token.
-    
+
     Args:
         token: JWT token to verify
-        
+
     Returns:
         Decoded token payload or None if invalid
     """
@@ -74,65 +74,55 @@ def verify_token(token: str) -> Optional[Dict[str, Any]]:
 class SignatureVerifier:
     """
     Cryptographic signature verification for claims and attestations.
-    
+
     This class provides methods for generating and verifying digital signatures
     using RSA cryptography.
     """
-    
+
     def __init__(self):
         """Initialize the signature verifier."""
         self.backend = default_backend()
-    
+
     def generate_keypair(self) -> tuple:
         """
         Generate an RSA keypair for testing.
-        
+
         Returns:
             Tuple of (private_key, public_key)
         """
         private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-            backend=self.backend
+            public_exponent=65537, key_size=2048, backend=self.backend
         )
         public_key = private_key.public_key()
         return private_key, public_key
-    
+
     def sign_data(self, private_key: rsa.RSAPrivateKey, data: bytes) -> bytes:
         """
         Sign data with a private key.
-        
+
         Args:
             private_key: RSA private key
             data: Data to sign
-            
+
         Returns:
             Digital signature
         """
         signature = private_key.sign(
             data,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256()
+            padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),
+            hashes.SHA256(),
         )
         return signature
-    
-    def verify_signature(
-        self, 
-        public_key: rsa.RSAPublicKey, 
-        signature: bytes, 
-        data: bytes
-    ) -> bool:
+
+    def verify_signature(self, public_key: rsa.RSAPublicKey, signature: bytes, data: bytes) -> bool:
         """
         Verify a signature against data.
-        
+
         Args:
             public_key: RSA public key
             signature: Digital signature to verify
             data: Original data
-            
+
         Returns:
             True if signature is valid, False otherwise
         """
@@ -140,11 +130,8 @@ class SignatureVerifier:
             public_key.verify(
                 signature,
                 data,
-                padding.PSS(
-                    mgf=padding.MGF1(hashes.SHA256()),
-                    salt_length=padding.PSS.MAX_LENGTH
-                ),
-                hashes.SHA256()
+                padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),
+                hashes.SHA256(),
             )
             return True
         except Exception:
@@ -154,35 +141,35 @@ class SignatureVerifier:
 class ZKProofPlaceholder:
     """
     Placeholder for zero-knowledge proof functionality.
-    
+
     This class provides a placeholder implementation for ZK proofs
     that will be expanded in future versions.
     """
-    
+
     @staticmethod
     def generate_proof(claim_data: Dict[str, Any]) -> str:
         """
         Generate a placeholder ZK proof for claim evidence.
-        
+
         Args:
             claim_data: Claim data to generate proof for
-            
+
         Returns:
             Placeholder proof string
         """
         # Placeholder implementation
         # In production, this would use actual ZK proof libraries
         return f"zk_proof_placeholder_{hash(str(claim_data))}"
-    
+
     @staticmethod
     def verify_proof(proof: str, public_inputs: Dict[str, Any]) -> bool:
         """
         Verify a placeholder ZK proof.
-        
+
         Args:
             proof: ZK proof to verify
             public_inputs: Public inputs for verification
-            
+
         Returns:
             True if proof is valid (placeholder always returns True)
         """

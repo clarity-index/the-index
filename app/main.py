@@ -8,9 +8,8 @@ for managing claims, evidence, links, and governance.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
 from app.api import claims, evidence, governance
-
+from app.core.config import settings
 
 # Create FastAPI application
 app = FastAPI(
@@ -57,19 +56,17 @@ def read_root():
         "name": settings.app_name,
         "version": settings.app_version,
         "docs": "/docs",
-        "health": "/health"
+        "health": "/health",
     }
 
 
 @app.get("/health")
 def health_check():
     """Health check endpoint."""
-    return {
-        "status": "healthy",
-        "version": settings.app_version
-    }
+    return {"status": "healthy", "version": settings.app_version}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
