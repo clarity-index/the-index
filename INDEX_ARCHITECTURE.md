@@ -1,437 +1,629 @@
+# INDEX_ARCHITECTURE.md
+## The Index — A Normative Protocol Specification for Verifiable Scientific Knowledge
 
-INDEX_ARCHITECTURE.md  
-Draft v0.1  
-====================
-
-Title: The Index — A Protocol for Verifiable Scientific Knowledge
-
-1. Introduction  
-   - Purpose of The Index  
-   - Relationship to BitRep  
-   - High-level goals  
-   - Why this layer is needed  
-
-2. Core Principles  
-   - Verifiability  
-   - Modularity  
-   - Epistemic transparency  
-   - Decentralization  
-   - Reputation-weighted evidence  
-   - Deterministic computation  
-
-3. System Overview  
-   - Claims  
-   - Evidence  
-   - Links  
-   - Epistemic status  
-   - Governance  
-   - Integrations  
-
-4. Data Model  
-   - Claim object  
-   - Evidence object  
-   - Link object  
-   - Epistemic cache  
-   - Versioning and immutability  
-
-5. Identity and Trust (BitRep Substrate)  
-   - How The Index uses BitRep identities  
-   - How attestations anchor contributions  
-   - How reputation influences epistemic status  
-
-6. Claim Layer  
-   - What constitutes a claim  
-   - Canonical text  
-   - Semantic representation  
-   - Domain tagging  
-   - Status lifecycle  
-
-7. Evidence Layer  
-   - Types of evidence  
-   - Metadata requirements  
-   - Quality scoring  
-   - Provenance and verification  
-
-8. Link Layer  
-   - Claim–evidence links  
-   - Claim–claim links  
-   - Evidence–evidence links  
-   - Relation types  
-   - Strength and weighting  
-
-9. Epistemic Status  
-   - Supporting weight  
-   - Contradicting weight  
-   - Independence  
-   - Robustness  
-   - Status categories  
-   - Update rules  
-
-10. Governance  
-    - Proposal system  
-    - Reputation-weighted voting  
-    - Quadratic scaling  
-    - Schema evolution  
-    - Ontology changes  
-
-11. API Architecture  
-    - Claim endpoints  
-    - Evidence endpoints  
-    - Link endpoints  
-    - Graph queries  
-    - Status computation  
-    - Governance endpoints  
-
-12. Security Model  
-    - Cryptographic guarantees  
-    - Provenance tracking  
-    - Sybil resistance  
-    - Input validation  
-    - Privacy considerations  
-
-13. Integration Layer  
-    - External sources (arXiv, CrossRef, PubMed, etc.)  
-    - Import adapters  
-    - Verification rules  
-    - Weighting external signals  
-
-14. Roadmap  
-    - Phase 1: Core models  
-    - Phase 2: API  
-    - Phase 3: Epistemic engine  
-    - Phase 4: Governance integration  
-    - Phase 5: Public release  
-
-15. Conclusion  
-    - Vision  
-    - Long-term direction  
-    - Relationship to BitRep and future layers  
+**Version:** 1.0  
+**Status:** Draft Specification  
+**Date:** 2024-01-23
 
 ---
 
+## Table of Contents
 
-# **INDEX_ARCHITECTURE.md (Draft v1.0)**  
-**The Index — A Protocol for Verifiable Scientific Knowledge**  
-Plain text version
-
----
-
-## 1. Introduction
-
-The Index is a protocol and reference architecture for verifiable scientific knowledge.  
-It provides a structured, reputation‑weighted system for representing claims, evidence, and epistemic relationships in a transparent and decentralized way.
-
-The Index is built on top of BitRep, which supplies identity, attestations, reputation, governance, and privacy.  
-BitRep is the trust substrate; The Index is the epistemic layer.
-
-The goal of The Index is to create a global, machine‑readable, human‑verifiable map of scientific knowledge that evolves through evidence, replication, and community governance rather than authority or consensus.
+1. [Scope and Introduction](#1-scope-and-introduction)
+2. [Terminology and Definitions](#2-terminology-and-definitions)
+3. [Core Principles](#3-core-principles)
+4. [Core Data Model](#4-core-data-model)
+5. [Claim Lifecycle](#5-claim-lifecycle)
+6. [API Surfaces](#6-api-surfaces)
+7. [Ontology Integration](#7-ontology-integration)
+8. [Provenance and Attestation](#8-provenance-and-attestation)
+9. [Governance Hooks](#9-governance-hooks)
+10. [Security and Integrity Considerations](#10-security-and-integrity-considerations)
+11. [Versioning and Evolution](#11-versioning-and-evolution)
 
 ---
 
-## 2. Core Principles
+## 1. Scope and Introduction
 
-**Verifiability**  
-Every claim, piece of evidence, and link must be backed by a BitRep identity and attestation.
+### 1.1 Purpose
 
-**Modularity**  
-Claims, evidence, links, and governance are independent layers that interoperate cleanly.
+The Index is a normative protocol specification for representing, linking, and evaluating verifiable scientific knowledge. This document defines the requirements and architecture for implementations of The Index protocol.
 
-**Epistemic transparency**  
-The status of a claim must be computable from public data and deterministic rules.
+### 1.2 Scope
 
-**Decentralization**  
-No central authority determines truth; the system emerges from weighted contributions.
+This specification defines:
 
-**Reputation‑weighted evidence**  
-Contributors with stronger reputational grounding have proportionally greater influence.
+- Core data models for claims, evidence, and relationships
+- Protocol invariants that implementations MUST enforce
+- API surfaces for interacting with The Index
+- Integration requirements with BitRep identity substrate
+- Governance mechanisms for protocol evolution
 
-**Deterministic computation**  
-Epistemic status is derived from explicit algorithms, not subjective judgment.
+This specification does NOT define:
 
----
+- Specific storage backends or database schemas
+- User interface requirements
+- Authentication mechanisms (delegated to BitRep)
+- Specific cryptographic algorithms (delegated to BitRep)
 
-## 3. System Overview
+### 1.3 Relationship to BitRep
 
-The Index consists of five core components:
+The Index MUST be built on top of BitRep, which provides:
 
-**Claims**  
-Atomic scientific statements with canonical text and semantic structure.
+- Cryptographic identities for all contributors
+- Attestation mechanisms for provenance
+- Reputation scoring for weighted evidence
+- Governance infrastructure for protocol evolution
+- Privacy and selective disclosure capabilities
 
-**Evidence**  
-Empirical or theoretical artifacts that support, contradict, or refine claims.
+Implementations of The Index MUST NOT implement their own identity, attestation, or reputation systems.
 
-**Links**  
-Attestations that connect claims and evidence with explicit relation types.
+### 1.4 Conformance Keywords
 
-**Epistemic Status**  
-A computed assessment of a claim’s standing based on weighted evidence.
-
-**Governance**  
-A decentralized mechanism for evolving schemas, ontologies, and rules.
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
 ---
 
-## 4. Data Model
+## 2. Terminology and Definitions
 
-**Claim**  
-- id  
-- canonical_text  
-- semantic_representation  
-- domains  
-- status  
-- created_by  
-- created_at  
-- updated_at  
+### 2.1 Core Terms
 
-**Evidence**  
-- id  
-- type  
-- source_identifier  
-- metadata  
-- submitted_by  
-- quality_score  
-- created_at  
+**Claim**: An atomic scientific statement with structured semantic representation (subject-predicate-object) and attribution to a BitRep identity.
 
-**Link**  
-- id  
-- claim_id  
-- evidence_id or claim_id_2  
-- relation_type  
-- strength  
-- attested_by  
-- timestamp  
+**Evidence**: An empirical or theoretical artifact that supports, contradicts, or refines claims. Evidence MUST be linked to at least one claim.
 
-**Epistemic Cache**  
-- claim_id  
-- status  
-- supporting_weight  
-- contradicting_weight  
-- last_computed_at  
+**Link**: An attested relationship between a claim and evidence, or between two claims. Links MUST specify a relation type and MAY include strength weighting.
 
-All objects are immutable except for status fields and metadata updates.
+**Epistemic Status**: A computed assessment of a claim's standing based on weighted evidence and link relationships.
+
+**Contributor**: A participant in The Index identified by a BitRep identity. All actions MUST be attributed to a contributor.
+
+**Protocol Invariant**: A requirement that implementations MUST enforce at all times to maintain protocol integrity.
+
+### 2.2 Epistemic Terms
+
+**Supporting Weight**: The sum of weighted supporting links for a claim, adjusted by contributor reputation.
+
+**Contradicting Weight**: The sum of weighted contradicting links for a claim, adjusted by contributor reputation.
+
+**Independence**: A measure of diversity in evidence sources and contributor identities for a claim.
+
+**Robustness**: A measure of replication, methodological quality, and cross-domain consistency for a claim.
 
 ---
 
-## 5. Identity and Trust (BitRep Substrate)
+## 3. Core Principles
 
-The Index relies entirely on BitRep for:
+### 3.1 Verifiability
 
-- cryptographic identities  
-- signed attestations  
-- reputation scores  
-- governance mechanisms  
-- selective disclosure  
+All claims, evidence, and links MUST be:
+- Attributed to a BitRep identity
+- Cryptographically signed via BitRep attestations
+- Independently verifiable by any observer
 
-Every action in The Index is anchored in a BitRep identity.  
-Every link is a BitRep attestation.  
-Every epistemic computation uses BitRep reputation as a weighting factor.
+Implementations MUST reject unsigned or unattributed contributions.
 
----
+### 3.2 Modularity
 
-## 6. Claim Layer
+The protocol MUST maintain clear separation between:
+- The claim layer (scientific statements)
+- The evidence layer (supporting artifacts)
+- The link layer (relationships)
+- The governance layer (protocol evolution)
 
-A claim is a structured scientific statement.
+These layers MUST interoperate through well-defined interfaces.
 
-**Components**  
-- canonical text (human‑readable)  
-- semantic representation (machine‑readable)  
-- domain tags  
-- provenance (BitRep identity)  
-- status (proposed, supported, contested, refuted, deprecated)
+### 3.3 Epistemic Transparency
 
-**Lifecycle**  
-1. Proposed  
-2. Linked to evidence  
-3. Evaluated by epistemic engine  
-4. Status updated  
-5. Potentially deprecated or refined  
+The epistemic status of any claim MUST be:
+- Computable from public data
+- Derived using deterministic algorithms
+- Reproducible by independent implementations
 
-Claims are the primary nodes in the epistemic graph.
+Implementations MUST NOT use subjective judgment or hidden signals in status computation.
 
----
+### 3.4 Decentralization
 
-## 7. Evidence Layer
+The protocol MUST NOT require:
+- Central authority for truth determination
+- Privileged administrators with special powers
+- Single points of failure
 
-Evidence represents empirical or theoretical support.
+Protocol evolution MUST occur through decentralized governance.
 
-**Types**  
-- experiment  
-- observation  
-- dataset  
-- simulation  
-- theorem  
-- meta‑analysis  
+### 3.5 Reputation Weighting
 
-**Metadata**  
-- methodology  
-- sample size  
-- uncertainty  
-- instrumentation  
-- replication history  
+Evidence and links MUST be weighted by the BitRep reputation of contributors. Implementations MUST apply reputation weighting consistently in epistemic status computation.
 
-Evidence must be linked to at least one claim to enter the epistemic graph.
+### 3.6 Deterministic Computation
+
+Epistemic status computation MUST be deterministic. Given identical input data and algorithm parameters, all implementations MUST produce identical results.
 
 ---
 
-## 8. Link Layer
+## 4. Core Data Model
 
-Links define relationships between claims and evidence.
+### 4.1 Claim Object
 
-**Relation Types**  
-- supports  
-- contradicts  
-- weakly supports  
-- refines  
-- generalizes  
-- depends on  
-- conflicts with  
+A Claim MUST contain the following required fields:
 
-**Properties**  
-- strength (float)  
-- attested_by (BitRep identity)  
-- timestamp  
+- `id` (string): Unique identifier matching pattern `claim_[a-zA-Z0-9_-]+`
+- `subject` (string): The subject of the claim (non-empty)
+- `predicate` (string): The relationship or property being asserted (non-empty)
+- `object` (string): What is being asserted about the subject (non-empty)
+- `contributor_id` (string): BitRep identity of the creator (non-empty)
+- `timestamp` (ISO 8601 datetime): When the claim was created
 
-Links are the edges of the epistemic graph and the primary input to status computation.
+A Claim MUST contain at least one of:
+- `evidence_refs` (array of strings): References to evidence (minimum 1 element if present)
+- `justification` (string): Textual justification (non-empty if present)
 
----
+**Protocol Invariant**: Claims MUST have either evidence_refs OR justification.
 
-## 9. Epistemic Status
+A Claim MAY contain:
+- `canonical_text` (string): Human-readable claim text
+- `semantic_representation` (object): Machine-readable semantic structure
+- `domains` (array of strings): Domain tags
+- `status` (enum): One of: proposed, supported, contested, refuted, deprecated
+- `created_at` (ISO 8601 datetime): Creation timestamp
+- `updated_at` (ISO 8601 datetime): Last update timestamp
+- `provenance` (object): Attestation and signature information
 
-The Index computes the standing of each claim using:
+Implementations MUST validate that all claims conform to these requirements.
 
-**Supporting Weight**  
-Sum of weighted supporting links.
+### 4.2 Evidence Object
 
-**Contradicting Weight**  
-Sum of weighted contradicting links.
+An Evidence object MUST contain:
 
-**Independence**  
-Diversity of identities and evidence sources.
+- `id` (string): Unique identifier matching pattern `evidence_[a-zA-Z0-9_-]+`
+- `type` (enum): One of: experiment, observation, dataset, simulation, theorem, meta_analysis
+- `source_identifier` (string): External identifier (DOI, arXiv ID, etc.)
+- `submitted_by` (string): BitRep identity of submitter
+- `created_at` (ISO 8601 datetime): Submission timestamp
 
-**Robustness**  
-Replication, methodological quality, cross‑domain consistency.
+An Evidence object MAY contain:
 
-**Status Categories**  
-- proposed  
-- supported  
-- contested  
-- refuted  
-- deprecated  
+- `metadata` (object): Domain-specific metadata including:
+  - `methodology` (string)
+  - `sample_size` (integer)
+  - `uncertainty` (float)
+  - `instrumentation` (string)
+  - `replication_history` (array of strings)
+- `quality_score` (float, 0.0-1.0): Computed quality assessment
 
-Status is deterministic and recomputable from public data.
+Evidence MUST be linked to at least one claim to be included in the epistemic graph.
 
----
+### 4.3 Link Object
 
-## 10. Governance
+A Link MUST contain:
 
-The Index uses BitRep governance for:
+- `id` (string): Unique identifier
+- `claim_id` (string): ID of the claim being linked
+- `relation_type` (enum): One of: supports, contradicts, weakly_supports, refines, generalizes, depends_on, conflicts_with
+- `attested_by` (string): BitRep identity creating the link
+- `timestamp` (ISO 8601 datetime): Link creation time
 
-- schema evolution  
-- ontology updates  
-- relation type changes  
-- conflict resolution rules  
-- spam and abuse mitigation  
+A Link MUST contain exactly one of:
+- `evidence_id` (string): ID of linked evidence (for claim-evidence links)
+- `claim_id_2` (string): ID of second claim (for claim-claim links)
 
-Voting is reputation‑weighted with quadratic scaling.  
-Governance proposals are stored and resolved through BitRep.
+A Link MAY contain:
+- `strength` (float, 0.0-1.0): Relationship strength (default 1.0)
 
----
+**Protocol Invariant**: Links MUST connect to either evidence OR another claim, never both.
 
-## 11. API Architecture
+### 4.4 Epistemic Cache
 
-**Claim Endpoints**  
-- create claim  
-- retrieve claim  
-- search claims  
-- update status  
+Implementations SHOULD maintain an epistemic cache for performance. A cache entry MUST contain:
 
-**Evidence Endpoints**  
-- submit evidence  
-- retrieve evidence  
-- attach evidence to claims  
+- `claim_id` (string): ID of the claim
+- `status` (enum): Computed status category
+- `supporting_weight` (float): Total weighted support
+- `contradicting_weight` (float): Total weighted contradiction
+- `independence_score` (float, 0.0-1.0): Evidence diversity measure
+- `robustness_score` (float, 0.0-1.0): Quality and replication measure
+- `last_computed_at` (ISO 8601 datetime): Cache timestamp
 
-**Link Endpoints**  
-- create link  
-- update link  
-- list links for a claim  
+Implementations MUST invalidate cache entries when underlying data changes.
 
-**Graph Endpoints**  
-- query subgraphs  
-- dependency analysis  
-- evidence networks  
+### 4.5 Immutability
 
-**Status Endpoints**  
-- compute status  
-- retrieve cached status  
+Claims, evidence, and links MUST be immutable after creation, except for:
+- Claim status updates (via epistemic computation)
+- Cache recomputation
+- Metadata corrections (via governance)
 
-**Governance Endpoints**  
-- proposals  
-- votes  
-- tallies  
-
-The API is stateless aside from stored objects and cached computations.
+Implementations MUST preserve creation timestamps and original content.
 
 ---
 
-## 12. Security Model
+## 5. Claim Lifecycle
 
-- cryptographic signatures for all attestations  
-- provenance tracking for claims and evidence  
-- Sybil resistance via BitRep reputation  
-- strict input validation  
-- privacy via selective disclosure  
-- deterministic recomputation for auditability  
+### 5.1 Creation Phase
 
-Security is enforced through cryptography and graph‑level resistance, not central authority.
+When a claim is created, implementations MUST:
 
----
+1. Validate all required fields are present
+2. Verify contributor_id corresponds to valid BitRep identity
+3. Enforce evidence_refs OR justification requirement
+4. Assign unique claim ID
+5. Set status to "proposed"
+6. Record creation timestamp
+7. Store claim persistently
 
-## 13. Integration Layer
+### 5.2 Linking Phase
 
-The Index can import external evidence from:
+After creation, contributors MAY:
 
-- arXiv  
-- CrossRef  
-- PubMed  
-- Zenodo  
-- institutional repositories  
-- GitHub (datasets, code)  
+- Submit evidence and create claim-evidence links
+- Create claim-claim links to establish relationships
+- Update link strength values
 
-**Import Rules**  
-- metadata validation  
-- provenance verification  
-- lower default weighting for external signals  
-- optional community review  
+All links MUST be attested by a BitRep identity.
 
-Integrations expand the epistemic graph while maintaining trust boundaries.
+### 5.3 Evaluation Phase
 
----
+Implementations MUST periodically or on-demand:
 
-## 14. Roadmap
+1. Compute supporting_weight from supporting links
+2. Compute contradicting_weight from contradicting links
+3. Calculate independence_score from source diversity
+4. Calculate robustness_score from quality metrics
+5. Determine status category based on weights
+6. Update epistemic cache
 
-**Phase 1: Core Models**  
-Claims, evidence, links, basic API.
+### 5.4 Status Categories
 
-**Phase 2: Epistemic Engine**  
-Status computation, weighting, caching.
+Implementations MUST assign status based on these criteria:
 
-**Phase 3: Governance Integration**  
-Schema evolution, ontology management.
+- **proposed**: Default status, insufficient evidence
+- **supported**: supporting_weight significantly exceeds contradicting_weight
+- **contested**: supporting_weight and contradicting_weight are comparable
+- **refuted**: contradicting_weight significantly exceeds supporting_weight
+- **deprecated**: Claim superseded or retracted via governance
 
-**Phase 4: External Integrations**  
-Adapters for arXiv, CrossRef, PubMed.
+Implementations SHOULD define specific thresholds for status transitions.
 
-**Phase 5: Public Release**  
-Documentation, examples, community onboarding.
+### 5.5 Deprecation
 
----
+Claims MAY be deprecated through:
+- Governance proposal and vote
+- Contributor retraction (for their own claims)
+- Community consensus mechanisms
 
-## 15. Conclusion
-
-The Index is a modular, decentralized protocol for verifiable scientific knowledge.  
-It builds on BitRep’s identity and trust substrate to create a transparent, reputation‑weighted epistemic graph.
-
-The long‑term vision is a global, open, continuously evolving map of scientific claims and evidence — governed by the community, grounded in verifiable data, and independent of any single institution.
+Deprecated claims MUST remain in the graph but SHOULD be marked clearly.
 
 ---
 
+## 6. API Surfaces
+
+### 6.1 Required Endpoints
+
+Implementations MUST provide the following HTTP REST API endpoints:
+
+#### 6.1.1 Claim Endpoints
+
+- `POST /claims` - Create a new claim
+  - MUST validate protocol invariants
+  - MUST return 400 for invalid claims
+  - MUST return 201 with claim object on success
+
+- `GET /claims/{id}` - Retrieve a specific claim
+  - MUST return 404 if not found
+  - MUST return 200 with claim object if found
+
+- `GET /claims` - List claims with filtering
+  - MUST support pagination (limit, offset)
+  - SHOULD support filtering by status, domain, contributor
+  - MUST return 200 with array of claims
+
+- `GET /claims/search` - Search claims by text
+  - MUST support full-text search on canonical_text
+  - MUST return 200 with array of matching claims
+
+#### 6.1.2 Evidence Endpoints
+
+- `POST /evidence` - Submit new evidence
+  - MUST validate required fields
+  - MUST return 201 with evidence object on success
+
+- `GET /evidence/{id}` - Retrieve specific evidence
+  - MUST return 404 if not found
+  - MUST return 200 with evidence object if found
+
+- `GET /evidence` - List evidence with filtering
+  - MUST support pagination
+  - SHOULD support filtering by type, source
+
+#### 6.1.3 Link Endpoints
+
+- `POST /links` - Create a new link
+  - MUST validate claim and evidence/claim_2 exist
+  - MUST enforce protocol invariants
+  - MUST return 201 with link object on success
+
+- `GET /links` - List links
+  - MUST support filtering by claim_id
+  - MUST support filtering by relation_type
+  - MUST return 200 with array of links
+
+#### 6.1.4 Epistemic Status Endpoints
+
+- `GET /claims/{id}/status` - Get computed epistemic status
+  - MUST return current cached status if available
+  - SHOULD trigger recomputation if cache is stale
+  - MUST return 200 with status object
+
+- `POST /claims/{id}/status/compute` - Force status recomputation
+  - MUST recompute from current graph state
+  - MUST update cache
+  - MUST return 200 with updated status
+
+### 6.2 Optional Endpoints
+
+Implementations MAY provide:
+
+- `GET /graph` - Query subgraphs
+- `GET /claims/{id}/dependencies` - Dependency analysis
+- `GET /claims/{id}/evidence` - Evidence network for claim
+- Graph traversal and visualization endpoints
+
+### 6.3 Error Handling
+
+Implementations MUST return appropriate HTTP status codes:
+
+- 400: Bad Request (invalid input, protocol violations)
+- 404: Not Found (resource does not exist)
+- 409: Conflict (duplicate IDs, constraint violations)
+- 500: Internal Server Error (implementation errors)
+
+Error responses SHOULD include descriptive messages.
+
+---
+
+## 7. Ontology Integration
+
+### 7.1 Ontology Requirements
+
+Implementations SHOULD support a hierarchical ontology for:
+
+- Domain classification
+- Predicate vocabularies
+- Relation type taxonomies
+- Evidence type categorization
+
+### 7.2 Core Ontology
+
+The protocol MUST define a core ontology including:
+
+- Fundamental relation types (supports, contradicts, etc.)
+- Basic evidence types (experiment, observation, etc.)
+- Standard epistemic status categories
+
+### 7.3 Extended Ontologies
+
+Implementations MAY support extended ontologies for:
+
+- Discipline-specific domains
+- Specialized evidence types
+- Custom relation types
+
+Extended ontologies MUST be registered through governance.
+
+### 7.4 Ontology Evolution
+
+Ontology changes MUST follow governance procedures:
+
+1. Proposal submission with rationale
+2. Community review period
+3. Reputation-weighted voting
+4. Implementation migration path
+
+Breaking ontology changes MUST be versioned.
+
+---
+
+## 8. Provenance and Attestation
+
+### 8.1 Identity Requirements
+
+All contributions MUST be attributed to a BitRep identity. Implementations MUST:
+
+- Verify BitRep identity signatures
+- Reject contributions without valid attribution
+- Store contributor_id with all objects
+
+### 8.2 Attestation Anchoring
+
+Claims, evidence, and links SHOULD be anchored as BitRep attestations. Implementations SHOULD:
+
+- Generate attestation for each contribution
+- Store attestation ID in provenance metadata
+- Support attestation verification
+
+### 8.3 Reputation Integration
+
+Implementations MUST integrate BitRep reputation for:
+
+- Link strength weighting in epistemic computation
+- Governance vote weighting
+- Quality score calculation
+
+Implementations MUST fetch current reputation scores from BitRep.
+
+### 8.4 Provenance Tracking
+
+Implementations MUST maintain complete provenance chains:
+
+- Original contributor and timestamp
+- Modification history (if applicable)
+- Attestation signatures
+- Reputation scores at time of contribution
+
+---
+
+## 9. Governance Hooks
+
+### 9.1 Governance Scope
+
+Governance MUST cover:
+
+- Schema evolution (adding/modifying fields)
+- Ontology updates (new domains, relations, types)
+- Protocol parameter changes (status thresholds, weights)
+- Conflict resolution (disputed claims, spam)
+
+### 9.2 Proposal Mechanism
+
+Implementations MUST support:
+
+- Proposal submission by any contributor
+- Structured proposal format with rationale
+- Community review period (RECOMMENDED: 7-14 days)
+- Outcome recording in governance log
+
+### 9.3 Voting Mechanism
+
+Implementations MUST implement:
+
+- Reputation-weighted voting via BitRep
+- Quadratic scaling (vote_weight = sqrt(reputation))
+- Transparent vote tallying
+- Quorum requirements
+
+### 9.4 Execution
+
+Approved proposals MUST trigger:
+
+- Automatic schema/ontology updates (if applicable)
+- Migration scripts for breaking changes
+- Notification to all implementations
+- Version increment
+
+---
+
+## 10. Security and Integrity Considerations
+
+### 10.1 Cryptographic Security
+
+Implementations MUST:
+
+- Use BitRep cryptographic signatures for all attestations
+- Verify signatures before accepting contributions
+- Support signature verification by third parties
+
+Implementations MUST NOT:
+
+- Accept unsigned contributions
+- Implement custom cryptographic schemes
+- Store private keys
+
+### 10.2 Input Validation
+
+Implementations MUST validate all inputs:
+
+- Field type and format validation
+- Length limits on text fields
+- Numeric range validation
+- Pattern matching for IDs
+
+Implementations MUST reject invalid inputs with descriptive errors.
+
+### 10.3 Sybil Resistance
+
+Implementations MUST leverage BitRep reputation for Sybil resistance:
+
+- Weight contributions by reputation
+- Apply diminishing returns for multiple contributions from same identity
+- Support community flagging of suspicious behavior
+
+### 10.4 Privacy Considerations
+
+Implementations SHOULD support:
+
+- Selective disclosure via BitRep
+- Pseudonymous contribution (real identity hidden)
+- Confidential evidence submission with delayed reveal
+
+Implementations MUST NOT:
+
+- Expose private BitRep identity information
+- Link pseudonymous identities without consent
+- Share data with unauthorized parties
+
+### 10.5 Integrity Guarantees
+
+Implementations MUST ensure:
+
+- Immutability of core objects (claims, evidence, links)
+- Deterministic epistemic computation
+- Auditability of all actions
+- Provenance chain integrity
+
+---
+
+## 11. Versioning and Evolution
+
+### 11.1 Versioning Scheme
+
+The Index protocol uses semantic versioning: MAJOR.MINOR.PATCH
+
+- **MAJOR**: Breaking changes to core data models or protocol invariants
+- **MINOR**: Backward-compatible feature additions
+- **PATCH**: Bug fixes and clarifications
+
+Current version: 1.0.0
+
+### 11.2 Breaking Changes
+
+Breaking changes MUST:
+
+- Increment MAJOR version
+- Provide migration documentation
+- Include deprecation period (RECOMMENDED: 6 months minimum)
+- Be approved through governance vote
+
+Examples of breaking changes:
+- Modifying required fields in core data models
+- Changing protocol invariants
+- Removing API endpoints
+- Incompatible ontology restructuring
+
+### 11.3 Backward Compatibility
+
+Implementations SHOULD maintain backward compatibility for:
+
+- Reading older data formats
+- Supporting deprecated API endpoints during transition
+- Honoring legacy attestations
+
+### 11.4 Evolution Principles
+
+Protocol evolution MUST follow these principles:
+
+1. **Minimal Disruption**: Prefer additive changes over breaking changes
+2. **Community Consensus**: Major changes require governance approval
+3. **Migration Support**: Provide tools for transitioning implementations
+4. **Documentation**: Update specification and migration guides
+5. **Transparency**: Announce changes with rationale and timeline
+
+### 11.5 Implementation Compliance
+
+Implementations MUST declare their protocol version and MUST comply with all MUST/REQUIRED directives for that version.
+
+Implementations SHOULD implement RECOMMENDED features but MAY omit them with justification.
+
+Implementations MAY extend the protocol with additional features but MUST NOT violate protocol invariants.
+
+---
+
+## 12. Conclusion
+
+This specification defines The Index as a protocol for verifiable scientific knowledge built on the BitRep identity substrate. Compliant implementations MUST enforce all protocol invariants, provide required API surfaces, and participate in decentralized governance.
+
+The protocol is designed to evolve through community governance while maintaining integrity, transparency, and decentralization. All implementations share responsibility for upholding these principles.
+
+---
+
+**Document History:**
+- Version 1.0 (2024-01-23): Initial normative specification

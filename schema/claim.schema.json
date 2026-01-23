@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://clarity-index.github.io/the-index/schema/claim.schema.json",
+  "title": "Claim",
+  "description": "A structured scientific claim in The Index protocol",
+  "type": "object",
+  "required": ["id", "subject", "predicate", "object", "contributor_id", "timestamp"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the claim",
+      "pattern": "^claim_[a-zA-Z0-9_-]+$"
+    },
+    "subject": {
+      "type": "string",
+      "description": "The subject of the claim (what the claim is about)",
+      "minLength": 1
+    },
+    "predicate": {
+      "type": "string",
+      "description": "The predicate of the claim (the relationship or property being asserted)",
+      "minLength": 1
+    },
+    "object": {
+      "type": "string",
+      "description": "The object of the claim (what is being asserted about the subject)",
+      "minLength": 1
+    },
+    "contributor_id": {
+      "type": "string",
+      "description": "BitRep identity of the contributor who created the claim",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the claim was created"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "description": "References to evidence supporting or contradicting this claim",
+      "items": {
+        "type": "string",
+        "description": "Evidence identifier"
+      },
+      "minItems": 0
+    },
+    "justification": {
+      "type": "string",
+      "description": "Textual justification for the claim when evidence_refs is empty",
+      "minLength": 1
+    },
+    "canonical_text": {
+      "type": "string",
+      "description": "Human-readable canonical text of the claim",
+      "minLength": 1
+    },
+    "semantic_representation": {
+      "type": "object",
+      "description": "Machine-readable semantic structure of the claim",
+      "additionalProperties": true
+    },
+    "domains": {
+      "type": "array",
+      "description": "Domain tags categorizing the claim",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "type": "string",
+      "description": "Current epistemic status of the claim",
+      "enum": ["proposed", "supported", "contested", "refuted", "deprecated"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the claim was first created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the claim was last updated"
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Provenance and attestation information",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of the claim"
+        },
+        "attestation_id": {
+          "type": "string",
+          "description": "BitRep attestation identifier"
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": ["evidence_refs"],
+      "properties": {
+        "evidence_refs": {
+          "minItems": 1
+        }
+      }
+    },
+    {
+      "required": ["justification"]
+    }
+  ]
+}
