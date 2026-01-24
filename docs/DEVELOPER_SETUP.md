@@ -460,7 +460,7 @@ pip install -r requirements-dev.txt
 
 ## Next Steps
 
-1. Read the [Architecture Documentation](../INDEX_ARCHITECTURE.md)
+1. Read the [Architecture Documentation](roadmap-internal-notes.md)
 2. Explore the [API Documentation](API_DOCUMENTATION.md)
 3. Review [CONTRIBUTING.md](../CONTRIBUTING.md) for contribution guidelines
 4. Check the [Security Policy](SECURITY.md) for security considerations

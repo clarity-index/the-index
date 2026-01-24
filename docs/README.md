@@ -266,7 +266,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 - [API Documentation](docs/API_DOCUMENTATION.md)
 - [Developer Setup](docs/DEVELOPER_SETUP.md)
 - [Security Policy](docs/SECURITY.md)
-- [Architecture](INDEX_ARCHITECTURE.md)
+- [Architecture](roadmap-internal-notes.md)
 - [Whitepaper](The_Index_Whitepaper.MD)
 
 ## License
