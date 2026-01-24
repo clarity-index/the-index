@@ -42,7 +42,8 @@ the-index/
 ├── tests/                    # Test suite
 ├── claim_api.py              # Pydantic models aligned with schema
 ├── claim_layer.py            # Claim layer with protocol invariants
-├── INDEX_ARCHITECTURE.md     # Normative protocol specification
+├── docs/
+│   └── roadmap-internal-notes.md  # Normative protocol specification
 ├── CONTRIBUTING.md           # Contribution guidelines
 └── README.md                 # This file
 ```
@@ -154,7 +155,7 @@ The Index enforces key invariants to maintain integrity:
 4. **Link Targets**: Links MUST connect to either evidence OR another claim, never both
 5. **Immutability**: Core objects are immutable (except status updates and metadata corrections)
 
-See [INDEX_ARCHITECTURE.md](INDEX_ARCHITECTURE.md) for the complete normative specification.
+See [roadmap-internal-notes.md](docs/roadmap-internal-notes.md) for the complete normative specification.
 
 ---
 
@@ -229,7 +230,7 @@ The Index is built on a layered architecture:
 5. **Governance Layer**: Community-driven evolution
 6. **API Layer**: RESTful interfaces for all operations
 
-For the complete normative specification, see [INDEX_ARCHITECTURE.md](INDEX_ARCHITECTURE.md).
+For the complete normative specification, see [roadmap-internal-notes.md](docs/roadmap-internal-notes.md).
 
 ---
 
@@ -264,7 +265,7 @@ For the complete normative specification, see [INDEX_ARCHITECTURE.md](INDEX_ARCH
 
 ## Documentation
 
-- **[INDEX_ARCHITECTURE.md](INDEX_ARCHITECTURE.md)**: Normative protocol specification
+- **[roadmap-internal-notes.md](docs/roadmap-internal-notes.md)**: Normative protocol specification
 - **[docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)**: API reference
 - **[docs/DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md)**: Development guide
 - **[docs/SECURITY.md](docs/SECURITY.md)**: Security considerations

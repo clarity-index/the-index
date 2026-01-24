@@ -61,7 +61,7 @@ Each ontology file follows this JSON structure:
 
 ## Governance
 
-Ontology changes follow the governance process defined in INDEX_ARCHITECTURE.md:
+Ontology changes follow the governance process defined in roadmap-internal-notes.md:
 
 1. **Proposal**: Submit a proposal for new terms or changes
 2. **Review**: Community review period (7-14 days recommended)
