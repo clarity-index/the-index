@@ -52,6 +52,14 @@ class ClaimStore:
         if "id" not in claim:
             claim["id"] = f"claim_{uuid4().hex[:16]}"
         
+        # Check for existing claim - immutability enforcement
+        claim_id = claim["id"]
+        if claim_id in self._claims:
+            raise ValueError(
+                f"Protocol invariant violation: Claim {claim_id} already exists. "
+                "Claims MUST be immutable and cannot be modified after creation."
+            )
+        
         # Set timestamps
         now = datetime.utcnow().isoformat()
         if "created_at" not in claim:
@@ -63,7 +71,6 @@ class ClaimStore:
             claim["status"] = "proposed"
         
         # Store the claim
-        claim_id = claim["id"]
         self._claims[claim_id] = claim
         
         # Index by contributor
@@ -185,6 +192,31 @@ class ClaimStore:
             raise ValueError(
                 "Protocol invariant violation: Claim MUST have either evidence_refs or justification"
             )
+        
+        # Validate timestamp if present
+        if "timestamp" in claim:
+            try:
+                datetime.fromisoformat(claim["timestamp"].replace('Z', '+00:00'))
+            except (ValueError, AttributeError):
+                raise ValueError(
+                    "Protocol invariant violation: Claim timestamp MUST be valid ISO 8601 format"
+                )
+        
+        # Validate ID pattern if present
+        if "id" in claim:
+            import re
+            if not re.match(r'^claim_[a-zA-Z0-9_-]+$', claim["id"]):
+                raise ValueError(
+                    "Protocol invariant violation: Claim ID MUST match pattern 'claim_[a-zA-Z0-9_-]+'"
+                )
+        
+        # Validate status if present
+        if "status" in claim:
+            valid_statuses = ["proposed", "supported", "contested", "refuted", "deprecated"]
+            if claim["status"] not in valid_statuses:
+                raise ValueError(
+                    f"Protocol invariant violation: Claim status must be one of {valid_statuses}"
+                )
 
 
 # Global claim store instance
