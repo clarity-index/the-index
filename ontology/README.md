@@ -85,11 +85,68 @@ The Ontology Registry Interface provides programmatic access to registered ontol
 
 ### Core Interface Methods
 
-- **`register_ontology(ontology_file)`**: Register a new ontology with validation
-- **`get_ontology(ontology_id, version)`**: Retrieve a specific ontology by ID and version
-- **`validate_term(term_id, ontology_id)`**: Verify that a term exists in the specified ontology
-- **`list_ontologies()`**: Get all registered ontologies with metadata
-- **`resolve_term(term_reference)`**: Resolve a term reference to its full definition
+- **`resolve(term_id, ontology_id)`**: Resolve a term reference to its full definition. Returns the term dictionary if found, None otherwise.
+- **`list_versions(term_id)`**: Get all versions of a term across registered ontologies. Returns a list of version information.
+- **`validate_term(term_id, term_type, allow_deprecated)`**: Verify that a term exists in a registered ontology. Optionally validate term type and whether to allow deprecated terms.
+- **`get_term(term_id, ontology_id, version)`**: Retrieve a specific term from a specific ontology version.
+- **`list_ontologies()`**: Get all registered ontologies with metadata.
+- **`get_relation_types()`**: Get all valid relation types across all ontologies.
+- **`get_evidence_types()`**: Get all valid evidence types across all ontologies.
+- **`is_deprecated(term_id)`**: Check if a term has been marked as deprecated.
+
+### Ontology Versioning Rules
+
+**Version Format**: Ontologies MUST use semantic versioning (MAJOR.MINOR.PATCH).
+
+**Version Increment Rules**:
+
+1. **MAJOR version** MUST be incremented when:
+   - Breaking changes are made to term definitions
+   - Terms are removed entirely from the ontology
+   - Hierarchical relationships are restructured in incompatible ways
+
+2. **MINOR version** MUST be incremented when:
+   - New terms are added in a backward-compatible manner
+   - Term definitions are clarified or enhanced without changing meaning
+   - New aliases or examples are added to existing terms
+
+3. **PATCH version** MUST be incremented when:
+   - Typos or formatting issues are corrected
+   - Documentation is improved
+   - Non-semantic changes are made
+
+**Deprecation Policy**:
+
+1. **Terms MUST NOT be removed immediately**: When a term is no longer recommended, it MUST be marked as deprecated rather than removed.
+
+2. **Deprecated terms MUST remain resolvable**: The registry MUST continue to resolve deprecated terms so that historical claims remain valid.
+
+3. **Deprecated terms MUST be marked**: Terms being deprecated MUST have their status field set to "deprecated" and MUST include a "deprecated_in_version" field and optionally a "replacement_term" field.
+
+4. **New claims MUST NOT use deprecated terms**: Validation MUST reject new submissions that reference deprecated terms (unless explicitly allowed via governance).
+
+5. **Existing claims MAY reference deprecated terms**: Historical claims that reference deprecated terms MUST remain valid and retrievable.
+
+**Example Deprecated Term**:
+```json
+{
+  "id": "old_relation_type",
+  "label": "Old Relation Type",
+  "definition": "This relation type is deprecated",
+  "type": "relation",
+  "status": "deprecated",
+  "deprecated_in_version": "2.0.0",
+  "replacement_term": "new_relation_type",
+  "deprecation_reason": "Replaced by more precise relation type"
+}
+```
+
+**Version Compatibility**:
+
+- Claims MUST explicitly reference the ontology version they use (stored in provenance or metadata)
+- The registry MUST support querying terms by specific version
+- Implementations SHOULD provide migration tools when ontology versions change significantly
+- Cross-version term resolution SHOULD be supported where semantically equivalent
 
 ### Validation Requirements
 

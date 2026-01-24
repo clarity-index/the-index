@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://clarity-index.github.io/the-index/schema/link.schema.json",
+  "title": "Link",
+  "description": "An attested relationship between claims and evidence, or between claims in The Index protocol",
+  "type": "object",
+  "required": ["id", "source_id", "target_id", "relation_type", "weight", "attestor_id", "timestamp"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the link",
+      "pattern": "^link_[a-zA-Z0-9_-]+$"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "ID of the source object (claim)",
+      "pattern": "^claim_[a-zA-Z0-9_-]+$"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID of the target object (evidence or another claim)",
+      "minLength": 1
+    },
+    "relation_type": {
+      "type": "string",
+      "description": "Type of relationship between source and target",
+      "enum": [
+        "supports",
+        "contradicts",
+        "weakly_supports",
+        "refines",
+        "generalizes",
+        "depends_on",
+        "conflicts_with"
+      ]
+    },
+    "weight": {
+      "type": "number",
+      "description": "Strength of the relationship, adjusted by attestor reputation",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    "attestor_id": {
+      "type": "string",
+      "description": "BitRep identity of the contributor creating this link",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the link was created"
+    },
+    "target_type": {
+      "type": "string",
+      "description": "Type of the target object",
+      "enum": ["evidence", "claim"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the link",
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "description": "Confidence level in this relationship",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Textual explanation for the relationship"
+        },
+        "context": {
+          "type": "string",
+          "description": "Contextual information about when/why this link applies"
+        }
+      },
+      "additionalProperties": true
+    },
+    "attestation": {
+      "type": "object",
+      "description": "BitRep attestation information for this link",
+      "required": ["signature", "attestation_id"],
+      "properties": {
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of the link"
+        },
+        "attestation_id": {
+          "type": "string",
+          "description": "BitRep attestation identifier"
+        },
+        "reputation_score": {
+          "type": "number",
+          "description": "BitRep reputation score of attestor at time of creation",
+          "minimum": 0.0
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the link was first created"
+    },
+    "immutable_hash": {
+      "type": "string",
+      "description": "Cryptographic hash of immutable link fields for integrity verification",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "validation_status": {
+      "type": "string",
+      "description": "Validation status of the link references",
+      "enum": ["valid", "pending", "invalid"],
+      "default": "pending"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "target_type": {
+          "const": "evidence"
+        },
+        "target_id": {
+          "pattern": "^evidence_[a-zA-Z0-9_-]+$"
+        }
+      }
+    },
+    {
+      "properties": {
+        "target_type": {
+          "const": "claim"
+        },
+        "target_id": {
+          "pattern": "^claim_[a-zA-Z0-9_-]+$"
+        }
+      }
+    }
+  ]
+}

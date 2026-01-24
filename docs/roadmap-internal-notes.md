@@ -62,6 +62,14 @@ Implementations of The Index MUST NOT implement their own identity, attestation,
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
 
+**Glossary of Normative Keywords:**
+
+- **MUST** / **REQUIRED** / **SHALL**: This word means that the definition is an absolute requirement of the specification.
+- **MUST NOT** / **SHALL NOT**: This phrase means that the definition is an absolute prohibition of the specification.
+- **SHOULD** / **RECOMMENDED**: This word means that there may exist valid reasons in particular circumstances to ignore a particular item, but the full implications must be understood and carefully weighed before choosing a different course.
+- **SHOULD NOT** / **NOT RECOMMENDED**: This phrase means that there may exist valid reasons in particular circumstances when the particular behavior is acceptable or even useful, but the full implications should be understood and the case carefully weighed before implementing any behavior described with this label.
+- **MAY** / **OPTIONAL**: This word means that an item is truly optional. One implementation may choose to include the item because a particular marketplace requires it or because the implementation feels that it enhances the product while another implementation may omit the same item.
+
 ---
 
 ## 2. Terminology and Definitions
@@ -138,6 +146,41 @@ Evidence and links MUST be weighted by the BitRep reputation of contributors. Im
 ### 3.6 Deterministic Computation
 
 Epistemic status computation MUST be deterministic. Given identical input data and algorithm parameters, all implementations MUST produce identical results.
+
+### 3.7 Schema Validation and Rejection
+
+**Protocol Guarantee: Schema Violations Result in Rejection**
+
+Implementations MUST enforce strict schema validation for all objects. This guarantee ensures data integrity and protocol compliance:
+
+1. **Schema Violations MUST Result in Rejection**:
+   - Any object that does not conform to its JSON schema MUST be rejected
+   - Rejection MUST occur before persistence to storage
+   - Rejection responses MUST include descriptive error messages
+   - HTTP 400 Bad Request MUST be returned for schema violations
+
+2. **Required Field Validation**:
+   - All required fields MUST be present
+   - Required fields MUST NOT be null or undefined
+   - String fields MUST meet minimum length requirements
+   - Enum fields MUST have values from the defined set
+
+3. **Format Validation**:
+   - IDs MUST match specified patterns (e.g., `claim_[a-zA-Z0-9_-]+`)
+   - Timestamps MUST be valid ISO 8601 format
+   - URLs MUST be properly formatted where applicable
+   - Numeric values MUST be within specified ranges
+
+4. **Reference Validation**:
+   - All referenced objects (evidence_refs, claim_id, etc.) MUST exist in the system
+   - Circular references MUST be detected and rejected where prohibited
+   - Orphaned references MUST be prevented
+
+5. **Ontology Validation**:
+   - Predicates MUST reference valid ontology terms
+   - Relation types MUST be defined in the core or registered ontologies
+   - Evidence types MUST be recognized evidence categories
+   - Deprecated ontology terms MUST be rejected for new submissions
 
 ---
 
@@ -228,12 +271,41 @@ Implementations MUST invalidate cache entries when underlying data changes.
 
 ### 4.5 Immutability
 
-Claims, evidence, and links MUST be immutable after creation, except for:
-- Claim status updates (via epistemic computation)
-- Cache recomputation
-- Metadata corrections (via governance)
+**Protocol Guarantee: Immutability of Core Objects**
 
-Implementations MUST preserve creation timestamps and original content.
+Claims, evidence, and links MUST be immutable after acceptance into the protocol. This guarantee ensures:
+
+1. **Claims MUST be immutable** after acceptance:
+   - All required fields (id, subject, predicate, object, contributor_id, timestamp) MUST NOT be modified
+   - Evidence references and justification content MUST NOT be modified
+   - Original semantic representation MUST NOT be altered
+
+2. **Evidence objects MUST be immutable**:
+   - All fields (id, type, source_identifier, metadata) MUST NOT be modified after creation
+   - Provenance chain MUST remain intact and unmodified
+   - Checksum values MUST remain constant
+
+3. **Links MUST be append-only**:
+   - Links MUST NOT be edited after creation
+   - Links MUST NOT be deleted
+   - New links MAY be added at any time
+   - Link metadata (relation_type, weight, timestamp) MUST be immutable
+
+**Permitted Modifications:**
+
+The following modifications are permitted as they do not violate immutability guarantees:
+
+- **Claim status updates**: Status field MAY be updated via deterministic epistemic computation
+- **Cache recomputation**: Computed values in epistemic cache MAY be recalculated
+- **Metadata corrections**: Non-semantic metadata MAY be corrected via governance proposals (requires community approval)
+
+**Enforcement Requirements:**
+
+Implementations MUST:
+- Preserve creation timestamps for all objects
+- Preserve original content in its entirety
+- Reject any modification attempts to immutable fields with appropriate error messages
+- Maintain audit logs of all access attempts to core objects
 
 ---
 
@@ -272,17 +344,66 @@ Implementations MUST periodically or on-demand:
 5. Determine status category based on weights
 6. Update epistemic cache
 
-### 5.4 Status Categories
+### 5.4 Status Categories and State Transitions
+
+**Protocol Guarantee: Deterministic Status Computation**
+
+Status computation MUST be deterministic. Given identical input data (claims, evidence, links, and reputation scores), all implementations MUST produce identical status values.
+
+**Status Definitions:**
 
 Implementations MUST assign status based on these criteria:
 
-- **proposed**: Default status, insufficient evidence
-- **supported**: supporting_weight significantly exceeds contradicting_weight
-- **contested**: supporting_weight and contradicting_weight are comparable
-- **refuted**: contradicting_weight significantly exceeds supporting_weight
-- **deprecated**: Claim superseded or retracted via governance
+- **proposed**: Default initial status. A claim has insufficient supporting or contradicting evidence for evaluation. This is the entry state for all new claims.
+  
+- **supported**: A claim has strong evidential support. The supporting_weight significantly exceeds contradicting_weight. This indicates the claim is well-established with substantial backing.
+  
+- **contested**: A claim has comparable supporting and contradicting evidence. The supporting_weight and contradicting_weight are within a similar range, indicating active scientific debate or uncertainty.
+  
+- **refuted**: A claim has been substantially contradicted. The contradicting_weight significantly exceeds supporting_weight, indicating the claim is considered invalid or false based on current evidence.
+  
+- **deprecated**: A claim has been superseded, retracted, or removed from active consideration via governance mechanisms. The claim remains in the system for historical purposes but is no longer actively evaluated.
 
-Implementations SHOULD define specific thresholds for status transitions.
+**State Transition Rules:**
+
+Implementations MUST follow these transition rules:
+
+1. **proposed → supported**: 
+   - MUST occur when: `supporting_weight > threshold_support AND supporting_weight / (contradicting_weight + 1.0) > ratio_support`
+   - Recommended thresholds: `threshold_support = 3.0`, `ratio_support = 2.0`
+
+2. **proposed → contested**:
+   - MUST occur when: `supporting_weight > threshold_min AND contradicting_weight > threshold_min AND abs(supporting_weight - contradicting_weight) < threshold_contested`
+   - Recommended thresholds: `threshold_min = 1.0`, `threshold_contested = 1.0`
+
+3. **proposed → refuted**:
+   - MUST occur when: `contradicting_weight > threshold_refute AND contradicting_weight / (supporting_weight + 1.0) > ratio_refute`
+   - Recommended thresholds: `threshold_refute = 3.0`, `ratio_refute = 2.0`
+
+4. **supported ↔ contested ↔ refuted**:
+   - Bidirectional transitions are permitted as new evidence is added
+   - Transitions MUST be recomputed whenever the link graph changes
+   - Status MUST reflect current state of evidence
+
+5. **Any Status → deprecated**:
+   - MUST occur only through governance approval or contributor retraction
+   - This is a terminal state transition for active evaluation
+   - Deprecated claims MUST NOT transition back to other statuses
+
+**Supersession via Explicit Links:**
+
+Claims MAY be superseded through explicit link relationships:
+
+- A claim with `relation_type: refines` pointing to it from a newer claim SHOULD be marked as having a refinement
+- A claim with `relation_type: generalizes` pointing to it from a newer claim SHOULD be marked as having a generalization
+- Supersession does NOT automatically change status but MAY influence weight calculations
+- Governance MAY deprecate superseded claims based on community consensus
+
+**Immutability of State Transitions:**
+
+- Status transitions MUST be logged with timestamp and reason
+- Historical status values MUST be preserved for audit purposes
+- Status computation MUST be reproducible from stored link weights and timestamps
 
 ### 5.5 Deprecation
 

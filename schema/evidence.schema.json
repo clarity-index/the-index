@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://clarity-index.github.io/the-index/schema/evidence.schema.json",
+  "title": "Evidence",
+  "description": "An empirical or theoretical artifact supporting or contradicting claims in The Index protocol",
+  "type": "object",
+  "required": ["id", "type", "source", "timestamp", "provenance_chain", "checksum", "submitted_by"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the evidence",
+      "pattern": "^evidence_[a-zA-Z0-9_-]+$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of evidence",
+      "enum": ["experiment", "observation", "dataset", "simulation", "theorem", "meta_analysis"]
+    },
+    "source": {
+      "type": "string",
+      "description": "External identifier or source reference (DOI, arXiv ID, URL, etc.)",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the evidence was created or published"
+    },
+    "provenance_chain": {
+      "type": "array",
+      "description": "Chain of provenance showing evidence origin and transformations",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["actor", "action", "timestamp"],
+        "properties": {
+          "actor": {
+            "type": "string",
+            "description": "BitRep identity of the actor in this provenance step"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action taken (e.g., 'created', 'verified', 'submitted')"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this provenance step occurred"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional details about this provenance step"
+          }
+        }
+      }
+    },
+    "checksum": {
+      "type": "string",
+      "description": "Cryptographic checksum (SHA-256 or similar) of the evidence content for integrity verification",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "submitted_by": {
+      "type": "string",
+      "description": "BitRep identity of the contributor who submitted the evidence",
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Domain-specific metadata about the evidence",
+      "properties": {
+        "methodology": {
+          "type": "string",
+          "description": "Research methodology used"
+        },
+        "sample_size": {
+          "type": "integer",
+          "description": "Sample size for empirical studies",
+          "minimum": 0
+        },
+        "uncertainty": {
+          "type": "number",
+          "description": "Measure of uncertainty or error margin",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "instrumentation": {
+          "type": "string",
+          "description": "Instruments or tools used in data collection"
+        },
+        "replication_history": {
+          "type": "array",
+          "description": "References to replication studies",
+          "items": {
+            "type": "string",
+            "description": "Reference to a replication study"
+          }
+        },
+        "quality_indicators": {
+          "type": "object",
+          "description": "Quality metrics specific to evidence type",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "quality_score": {
+      "type": "number",
+      "description": "Computed quality assessment score",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the evidence was first submitted to The Index"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the evidence metadata was last updated"
+    },
+    "attestation": {
+      "type": "object",
+      "description": "BitRep attestation information",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of the evidence"
+        },
+        "attestation_id": {
+          "type": "string",
+          "description": "BitRep attestation identifier"
+        },
+        "reputation_score": {
+          "type": "number",
+          "description": "BitRep reputation score of submitter at time of submission",
+          "minimum": 0.0
+        }
+      }
+    },
+    "referenced_by_claims": {
+      "type": "array",
+      "description": "List of claim IDs that reference this evidence (for tracking)",
+      "items": {
+        "type": "string",
+        "pattern": "^claim_[a-zA-Z0-9_-]+$"
+      },
+      "minItems": 1
+    }
+  }
+}

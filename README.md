@@ -145,17 +145,39 @@ Computed deterministically from:
 
 ---
 
+## Normative Specification
+
+**The authoritative protocol specification is [docs/roadmap-internal-notes.md](docs/roadmap-internal-notes.md).**
+
+This README provides an overview and quick reference. For complete requirements, protocol invariants, and implementation guidelines, refer to the normative specification document which defines:
+
+- RFC-style normative language (MUST, SHOULD, MAY)
+- Complete protocol invariants and guarantees
+- Detailed claim lifecycle and state transitions
+- Schema requirements and validation rules
+- Ontology versioning and resolution
+- Deterministic epistemic computation algorithms
+
+In case of any discrepancies between this README and the normative specification, the normative specification takes precedence.
+
+---
+
 ## Protocol Invariants
 
-The Index enforces key invariants to maintain integrity:
+**The Index enforces strict protocol invariants to maintain data integrity and verifiability:**
 
-1. **Evidence or Justification**: Claims MUST have either `evidence_refs` OR `justification`
-2. **Attribution**: All contributions MUST be attributed to a BitRep identity
-3. **Semantic Structure**: Claims MUST have subject, predicate, and object
-4. **Link Targets**: Links MUST connect to either evidence OR another claim, never both
-5. **Immutability**: Core objects are immutable (except status updates and metadata corrections)
+1. **Claims Immutability**: Claims MUST be immutable after acceptance (except for status updates via epistemic computation)
+2. **Evidence Immutability**: Evidence objects MUST be immutable after creation
+3. **Links Append-Only**: Links MUST NOT be edited or deleted; only new links may be added
+4. **Evidence or Justification**: Claims MUST have either `evidence_refs` OR `justification`
+5. **Attribution**: All contributions MUST be attributed to a BitRep identity
+6. **Semantic Structure**: Claims MUST have subject, predicate, and object
+7. **Link References**: Links MUST reference existing objects only
+8. **Schema Compliance**: Schema violations MUST result in rejection before persistence
+9. **Deterministic Computation**: Status computation MUST be deterministic and reproducible
+10. **Ontology Resolution**: Claims MUST only reference valid, non-deprecated ontology terms
 
-See [roadmap-internal-notes.md](docs/roadmap-internal-notes.md) for the complete normative specification.
+**For complete protocol guarantees and enforcement rules, see the [normative specification](docs/roadmap-internal-notes.md).**
 
 ---
 
