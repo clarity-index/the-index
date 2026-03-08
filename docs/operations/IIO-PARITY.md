@@ -11,19 +11,6 @@ Parent: Index Integrity Operations (IIO)
 
 # Parity
 
-| Field        | Value                              |
-|--------------|------------------------------------|
-| Title        | Parity                             |
-| Index_Key    | IIO-PARITY                         |
-| Type         | Index Operation                    |
-| Layer        | Governance Layer                   |
-| Status       | Active                             |
-| Canonical    | true                               |
-| Version      | 1.0                                |
-| Parent       | Index Integrity Operations (IIO)   |
-
----
-
 ## Dependencies
 
 - `IIO-IMMUTABILITY` — Parity checks rely on the guarantee that records are immutable after creation; mutable records cannot be compared reliably.
@@ -42,7 +29,7 @@ Parity is not equality: it is a governance-enforced property that two or more re
 
 ## Function
 
-1. **Cross-layer field synchronisation** — For each claim that carries a linked evidence record, Parity asserts that the `claim_id` held by the link record matches the authoritative `id` on the claim object, and that the `evidence_id` held by the link record matches the authoritative `id` on the evidence object.
+1. **Cross-layer field synchronisation** — For each claim that carries a linked evidence record, Parity asserts that the `source_id` held by the link record matches the authoritative `id` on the source `Claim` object, and that the `target_id` held by the link record matches the authoritative `id` on the target `Evidence` or `Claim` object.
 
 2. **Status coherence** — Parity verifies that the `status` field on a `Claim` object is consistent with the computed `EpistemicStatus` produced by the epistemic engine. A claim whose computed status is `refuted` MUST NOT carry a stored status of `supported`.
 
@@ -50,13 +37,13 @@ Parity is not equality: it is a governance-enforced property that two or more re
 
 4. **Provenance chain continuity** — For evidence objects, Parity verifies that the `provenance_chain` recorded at submission time is identical to the chain retrievable at read time. Any divergence indicates an integrity breach.
 
-5. **Bidirectional reference integrity** — When a `Link` asserts `claim_id → evidence_id`, Parity confirms the inverse lookup (all links for that evidence) also returns the same link record.
+5. **Bidirectional reference integrity** — When a `Link` asserts `source_id → target_id`, Parity confirms the inverse lookup (all links for that target) also returns the same link record.
 
 ---
 
 ## Invariants
 
-1. For every `Link` record `L`, `L.claim_id` MUST reference an existing `Claim`, and `L.evidence_id` (or `L.claim_id_2` — used for claim-to-claim links) MUST reference an existing `Evidence` or `Claim` respectively.
+1. For every `Link` record `L`, `L.source_id` MUST reference an existing `Claim`, and `L.target_id` MUST reference an existing `Evidence` or `Claim`.
 2. The stored `Claim.status` MUST equal the status category produced by the most recent `EpistemicStatus` computation for that claim, or the claim MUST be marked as pending a status update.
 3. Every `relation_type` value persisted in any `Link` record MUST resolve to an active (non-deprecated) term in the canonical core ontology at the time of the parity check.
 4. The SHA-256 checksum stored on an `Evidence` record MUST equal the checksum recomputed from the record's stable fields at any point after creation.
@@ -68,7 +55,7 @@ Parity is not equality: it is a governance-enforced property that two or more re
 
 | ID | Failure | Trigger | Severity |
 |----|---------|---------|----------|
-| F1 | **Dangling link** | A `Link` references a `claim_id` or `evidence_id` that no longer exists in the store (e.g., a partially failed write) | Critical |
+| F1 | **Dangling link** | A `Link` references a `source_id` or `target_id` that no longer exists in the store (e.g., a partially failed write) | Critical |
 | F2 | **Status drift** | `Claim.status` diverges from the most recent `EpistemicStatus.status` computation without a recorded governance override | High |
 | F3 | **Deprecated relation term** | A `Link.relation_type` resolves to a term whose `status` is `deprecated` in `ontology/core.json` | High |
 | F4 | **Checksum mismatch** | The recomputed SHA-256 of an `Evidence` record's stable fields does not match the stored `evidence.checksum` | Critical |
