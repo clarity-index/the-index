@@ -5,7 +5,7 @@ Type: Index Operation
 Layer: Governance Layer
 Status: Active
 Canonical: true
-Version: "1.0"
+Version: 1.0
 Parent: Index Integrity Operations (IIO)
 ---
 
