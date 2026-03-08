@@ -268,6 +268,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 - [Security Policy](docs/SECURITY.md)
 - [Architecture](roadmap-internal-notes.md)
 - [Whitepaper](The_Index_Whitepaper.MD)
+- [Index Operations](operations/README.md)
 
 ## License
 
