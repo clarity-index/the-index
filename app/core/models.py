@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ClaimStatus(str, Enum):
@@ -84,8 +84,8 @@ class Claim(ClaimBase):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "claim_001",
                 "canonical_text": "Quantum entanglement persists over macroscopic distances",
@@ -100,6 +100,7 @@ class Claim(ClaimBase):
                 "updated_at": "2024-01-01T00:00:00Z",
             }
         }
+    )
 
 
 class EvidenceMetadata(BaseModel):
@@ -134,8 +135,8 @@ class Evidence(EvidenceBase):
     quality_score: float = Field(default=0.0, ge=0.0, le=1.0, description="Computed quality score")
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "evidence_001",
                 "type": "experiment",
@@ -146,6 +147,7 @@ class Evidence(EvidenceBase):
                 "created_at": "2024-01-01T00:00:00Z",
             }
         }
+    )
 
 
 class LinkBase(BaseModel):
@@ -182,8 +184,8 @@ class Link(LinkBase):
     attested_by: str = Field(..., description="BitRep identity creating the link")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "link_001",
                 "claim_id": "claim_001",
@@ -194,6 +196,7 @@ class Link(LinkBase):
                 "timestamp": "2024-01-01T00:00:00Z",
             }
         }
+    )
 
 
 class EpistemicStatus(BaseModel):
@@ -211,8 +214,8 @@ class EpistemicStatus(BaseModel):
     )
     last_computed_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "claim_id": "claim_001",
                 "status": "supported",
@@ -223,3 +226,4 @@ class EpistemicStatus(BaseModel):
                 "last_computed_at": "2024-01-01T00:00:00Z",
             }
         }
+    )
