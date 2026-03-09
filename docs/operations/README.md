@@ -29,3 +29,8 @@ This directory contains entries for the **Index Operations** database. Each entr
 | Index_Key   | Title   | Status | Version |
 |-------------|---------|--------|---------|
 | [IIO-PARITY](IIO-PARITY.md) | Parity | Active | 1.0 |
+| [IIO-DRIFT](IIO-DRIFT.md) | Drift Detection | Active | 1.0 |
+| [IIO-CANON](IIO-CANON.md) | Canonicalization | Active | 1.0 |
+| [IIO-REBIND](IIO-REBIND.md) | Rebinding | Active | 1.0 |
+| [IIO-TRAVERSE](IIO-TRAVERSE.md) | Traversal Optimization | Active | 1.0 |
+| [IIO-LINEAGE](IIO-LINEAGE.md) | Lineage | Active | 1.0 |

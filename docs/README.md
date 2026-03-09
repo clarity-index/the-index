@@ -263,6 +263,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for g
 
 ## Documentation
 
+- [Index Map](INDEX_MAP.md)
 - [API Documentation](API_DOCUMENTATION.md)
 - [Developer Setup](DEVELOPER_SETUP.md)
 - [Security Policy](SECURITY.md)
