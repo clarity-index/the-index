@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProposalType(str, Enum):
@@ -62,8 +62,8 @@ class Proposal(ProposalCreate):
     no_votes: float = Field(default=0.0, description="Total no vote weight")
     abstain_votes: float = Field(default=0.0, description="Total abstain vote weight")
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "proposal_001",
                 "title": "Add new relation type: 'partially_supports'",
@@ -77,6 +77,7 @@ class Proposal(ProposalCreate):
                 "no_votes": 3.2,
             }
         }
+    )
 
 
 class VoteCreate(BaseModel):
@@ -95,8 +96,8 @@ class Vote(VoteCreate):
     weighted_vote: float = Field(..., description="Reputation-weighted vote with quadratic scaling")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "vote_001",
                 "proposal_id": "proposal_001",
@@ -107,6 +108,7 @@ class Vote(VoteCreate):
                 "timestamp": "2024-01-01T00:00:00Z",
             }
         }
+    )
 
 
 class ProposalFinalize(BaseModel):

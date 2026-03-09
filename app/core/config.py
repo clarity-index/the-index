@@ -6,6 +6,7 @@ This module provides application configuration using Pydantic settings.
 
 from typing import Optional, List
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -36,9 +37,7 @@ class Settings(BaseSettings):
     governance_quorum_threshold: float = 0.5
     governance_quadratic_scaling: bool = True
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = ConfigDict(env_file=".env", case_sensitive=False)
 
 
 settings = Settings()

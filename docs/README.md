@@ -195,7 +195,7 @@ Computed assessment based on:
 Full API documentation is available at:
 - Interactive docs: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
-- See [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) for detailed reference
+- See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for detailed reference
 
 ## Development
 
@@ -227,7 +227,7 @@ ruff format app/ tests/
 
 ### Developer Setup
 
-See [DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md) for detailed development environment setup.
+See [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md) for detailed development environment setup.
 
 ## Security
 
@@ -237,7 +237,7 @@ The Index implements multiple security layers:
 - Placeholder zero-knowledge proofs
 - BitRep integration for identity and reputation (planned)
 
-See [SECURITY.md](docs/SECURITY.md) for security principles and vulnerability reporting.
+See [SECURITY.md](SECURITY.md) for security principles and vulnerability reporting.
 
 ## Governance
 
@@ -259,19 +259,21 @@ Voting is reputation-weighted with quadratic scaling to promote democratic decis
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 
 ## Documentation
 
-- [API Documentation](docs/API_DOCUMENTATION.md)
-- [Developer Setup](docs/DEVELOPER_SETUP.md)
-- [Security Policy](docs/SECURITY.md)
+- [Index Map](INDEX_MAP.md)
+- [API Documentation](API_DOCUMENTATION.md)
+- [Developer Setup](DEVELOPER_SETUP.md)
+- [Security Policy](SECURITY.md)
 - [Architecture](roadmap-internal-notes.md)
-- [Whitepaper](The_Index_Whitepaper.MD)
+- [Whitepaper](The_Index_Whitepaper.md)
+- [Index Operations](operations/README.md)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ## Citation
 
